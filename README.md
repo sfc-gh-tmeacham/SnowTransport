@@ -19,7 +19,8 @@ From now on, Conda should use the faster solver.
 
 ### Revert to Classic Solver
 
-1. If you need to revert the default configuration back to classic solver, you can run `conda config  --set solver classic` to make your choice explicit.
+1. If you need to revert the default configuration back to classic solver run:
+    `conda config  --set solver classic` to make your choice explicit.
 
 2. Run `conda config --remove-key solver` to delete the solver: libmamba line from your .condarc file.
 
