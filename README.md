@@ -42,4 +42,8 @@ streamlit run app.py
 #### Tips
 Use this command to list the environments you have: `conda info --envs`
 
+<<<<<<< HEAD
 Use this command to remove the environment: `conda env remove --name snowtransport_env`
+=======
+Use this command to remove the environment: `conda env remove --name snowtransport_env`
+>>>>>>> 0d3c99a6f2feecefb9746ae2213d4136882e56c4
