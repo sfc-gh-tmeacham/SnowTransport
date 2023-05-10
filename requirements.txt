@@ -1,2 +1,6 @@
 streamlit-aggrid
 st-annotated-text
+streamlit
+snowflake-snowpark-python
+pandas
+pyarrow

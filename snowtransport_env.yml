@@ -5,11 +5,28 @@ channels:
 dependencies:
   - python=3.8
   - pip
-  - snowflake-snowpark-python
-  - pandas
-  - openpyxl
-  - numpy
-  - streamlit
   - pip:
-    - -r requirements.txt
+    - streamlit-aggrid
+    - st-annotated-text
+    - streamlit
+    - snowflake-snowpark-python
+    - pandas
+    - pyarrow==10.0.1
+    - openpyxl
+    - numpy
+    - watchdog
   
+
+
+#old
+# - python=3.8
+# - pip=22.3
+# - snowflake-snowpark-python=1.00
+# - pandas=1.5.1
+# - openpyxl=3.0.10
+# - numpy=1.23.4
+# - streamlit=1.140
+
+# requirements.txt contents
+#streamlit-aggrid=0.3.3
+#st-annotated-text=3.0.0
