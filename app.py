@@ -17,6 +17,7 @@ st.set_page_config(page_icon="🚀", page_title="SnowTransport: Load a file into
                    layout="wide", initial_sidebar_state="expanded")
 
 ########## login form and Snowflake connection ##########
+
 session = st.connection.snowflake.login()
 
 ########## functions ##########
@@ -51,13 +52,20 @@ def get_curr_sc():
 
 
 def get_avail_roles():
-    query_roles = pd.DataFrame(session.sql(
-        'select CURRENT_AVAILABLE_ROLES() as AROLES').collect())
-    roles_as_list = json.loads(query_roles.iloc[0, 0])
-    allroles = pd.DataFrame(roles_as_list, columns=['name'])
-    roles = allroles[["name"]]
-    # print(roles)
-    return roles
+    try:
+        query_roles = pd.DataFrame(session.sql(
+            'select CURRENT_AVAILABLE_ROLES() as AROLES').collect())
+        roles_as_list = json.loads(query_roles.iloc[0, 0])
+        allroles = pd.DataFrame(roles_as_list, columns=['name'])
+        roles = allroles[["name"]]
+        # print(roles)
+        return roles
+    except Exception as e:
+        st.error(e.__class__)
+        # Delete all the items in Session state, this will return to login screen if token is expired
+        for key in st.session_state.keys():
+            del st.session_state[key]
+        st.experimental_rerun()
 
 
 def read_sheet(uploaded_file, file_type='xlsx', str_sheetname="", col_list=None, date_col_list=False):
@@ -159,9 +167,9 @@ st.write("""
 <style>
 [class*="block-container css-18e3th9 egzxvld2"]  {
 	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-	background-size: 500% 500%;
+	background-size: 600% 600%;
 	animation: gradient 15s ease infinite;
-	height: 200vh;
+	height: 300vh;
 }
 
 @keyframes gradient {
@@ -205,7 +213,7 @@ st.info("👈 Set your context via the sidebar.")
 
 ########## Tabs ##########
 tab1, tab2 = st.tabs(["\u2001 Upload a file \u2001",
-                     "\u2001 Explore Tables \u2001"])
+                     "\u2001 Future Development \u2001"])
 st.write(tabs_font_css, unsafe_allow_html=True)
 
 with tab1:
@@ -242,11 +250,11 @@ with tab1:
         enabled=True, paginationAutoPageSize=False, paginationPageSize=20)
     gridOptions = gb.build()
 
-    ########## AG Grid ##########
+    ########## File Preview AG Grid ##########
     response = AgGrid(
         shows,
         gridOptions=gridOptions,
-        enable_enterprise_modules=False,
+        enable_enterprise_modules=True,
         editable=True,
         update_mode=GridUpdateMode.MODEL_CHANGED,
         data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
@@ -267,16 +275,39 @@ with tab1:
                     snowpark_df = session.write_pandas(
                         df, tablname.upper(), auto_create_table=True)
                     st.success("TABLE CREATED!", icon="✅")
-                    desc = snowpark_df.describe()
-                    if desc:
+                    desc = pd.DataFrame(
+                        snowpark_df.describe().sort("SUMMARY").collect())
+                    df = desc.applymap(str)
+                    df = df.melt(id_vars='SUMMARY', value_name='VALUE')
+                    df = df.pivot(index='variable', columns='SUMMARY',
+                                  values='VALUE').convert_dtypes().reset_index()
+                    if not desc.empty:
                         with st.spinner(text="Gathering Summary Stats..."):
-                            st.dataframe(desc)
+                            gb2 = GridOptionsBuilder.from_dataframe(df)
+                            gb2.configure_default_column(
+                                enablePivot=True, enableValue=True, enableRowGroup=True, editable=True, groupable=True)
+                            gb2.configure_side_bar()
+                            gb2.configure_pagination(
+                                enabled=True, paginationAutoPageSize=False, paginationPageSize=20)
+                            gridOptions = gb2.build()
+                            summaryres = AgGrid(
+                                df,
+                                gridOptions=gridOptions,
+                                enable_enterprise_modules=True,
+                                editable=False,
+                                # update_mode=GridUpdateMode.MODEL_CHANGED,
+                                # data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+                                fit_columns_on_grid_load=False,
+                                theme='balham'
+                            )
+                            df = pd.DataFrame(summaryres["data"])
                             st.success("Summary Stats complete!", icon="✅")
                             st.snow()
-                except:
-                    st.error(
-                        "⚠️ It looks like you don't have privlages to create or overwite a table in this schema. Check your role and try again.")
+                except (RuntimeError, TypeError, NameError) as e:
+                    st.error(e)
+                    # st.error(
+                    #     "⚠️ It looks like you don't have privlages to create or overwite a table in this schema. Check your role and try again.")
 
 ########## tab2 ##########
-with tab2:
-    st.write("Coming soon...")
+# with tab2:
+#    st.write("Coming soon...")
