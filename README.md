@@ -6,6 +6,7 @@ CSV and Excel File uploader for Snowflake
 
 ### Faster Solver (OPTIONAL) 
 Use libmamba for a much faster solver
+
 https://conda.github.io/conda-libmamba-solver/getting-started/
 
 First, make sure you are running conda 4.12.0 or higher:
@@ -46,7 +47,7 @@ conda config --show-sources.
 ```
 
 
-### Required
+## Required
 
 Use these commands to create and activate the conda environment based on the specifications in the Yaml file:
 ```
