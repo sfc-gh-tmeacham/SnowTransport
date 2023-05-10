@@ -34,12 +34,16 @@ If you need to revert the default configuration back to classic solver, you can:
 
 Run 
 ```
-conda config  --set solver classic (to do your choice explicit).
+conda config  --set solver classic
 ```
+(to make your choice explicit).
+
 Run 
 ```
-conda config --remove-key solver to delete the solver: libmamba line from your .condarc file.
+conda config --remove-key solver 
 ```
+to delete the solver: libmamba line from your .condarc file.
+
 
 Verify config
 ```
