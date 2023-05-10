@@ -1,57 +1,32 @@
 # SnowTransport
 
-CSV and Excel File uploader for Snowflake
+CSV and Excel File uploader for Snowflake from TKO 2022. 
 
 ## To Install
 
 ### Faster Solver (OPTIONAL) 
-Use libmamba for a much faster solver
+Use libmamba for a much faster solver: https://conda.github.io/conda-libmamba-solver/getting-started/
 
-https://conda.github.io/conda-libmamba-solver/getting-started/
+1. First, make sure you are running conda 4.12.0 or higher: `conda update -n base conda`
 
-First, make sure you are running conda 4.12.0 or higher:
-```
-conda update -n base conda
-```
+2. Then install conda-libmamba-solver: `conda install -n base conda-libmamba-solver` 
 
-Then install conda-libmamba-solver:
-```
-conda install -n base conda-libmamba-solver
-```
+3. Use the following command to always use libmamba as your default solver: `conda config --set solver libmamba`
 
-Use the following command to always use libmamba as your default solver:
+4. If you are unsure what configuration is being used by conda, you can inspect it with: `conda config --show-sources`
 
-```
-conda config --set solver libmamba
-```
-If you are unsure what configuration is being used by conda, you can inspect it with 
-```
-conda config --show-sources.
-```
+From now on, Conda should use the faster solver.
+
+### Revert to Classic Solver
+
+1. If you need to revert the default configuration back to classic solver, you can run `conda config  --set solver classic` to make your choice explicit.
+
+2. Run `conda config --remove-key solver` to delete the solver: libmamba line from your .condarc file.
+
+3. Verify config `conda config --show-sources` 
 
 
-If you need to revert the default configuration back to classic solver, you can:
-
-Run 
-```
-conda config  --set solver classic
-```
-(to make your choice explicit).
-
-Run 
-```
-conda config --remove-key solver 
-```
-to delete the solver: libmamba line from your .condarc file.
-
-
-Verify config
-```
-conda config --show-sources.
-```
-
-
-## Required
+## Required to run SnowTransport
 
 Use these commands to create and activate the conda environment based on the specifications in the Yaml file:
 ```
@@ -62,12 +37,8 @@ To run this streamlit app
 ```
 streamlit run app.py
 ```
-Use this command to list the environments you have:
-```
-conda info --envs
-```
 
-Use this command to remove the environment:
-```
-conda env remove --name snowtransport_env
-```
+#### Tips
+Use this command to list the environments you have: `conda info --envs`
+
+Use this command to remove the environment: `conda env remove --name snowtransport_env`
